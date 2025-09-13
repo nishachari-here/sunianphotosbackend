@@ -16,6 +16,8 @@ from fastapi import Response # Add this import at the top
 # -------------------------
 # Configure Cloudinary
 # -------------------------
+print("Starting FastAPI app...")
+
 cloudinary.config(
     cloud_name=settings.CLOUDINARY_CLOUD_NAME,
     api_key=settings.CLOUDINARY_API_KEY,
@@ -26,16 +28,21 @@ cloudinary.config(
 # -------------------------
 # Firebase setup
 # -------------------------
-if not firebase_admin._apps:
-    cred = credentials.Certificate(settings.credentials_data)
-    firebase_admin.initialize_app(cred)
-db = firestore.client()
+
 
 # -------------------------
 # Initialize FastAPI
 # -------------------------
-app = FastAPI(title=settings.APP_NAME)
-
+try:
+    print("Creating FastAPI app")
+    app = FastAPI(title=settings.APP_NAME)
+    if not firebase_admin._apps:
+        cred = credentials.Certificate(settings.credentials_data)
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+except Exception as e:
+    print(f"App failed to start: {e}")
+    raise
 # CORS
 origins = [o.strip() for o in settings.CORS_ORIGINS.split(",") if o.strip()]
 app.add_middleware(
