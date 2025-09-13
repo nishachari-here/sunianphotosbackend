@@ -27,7 +27,7 @@ cloudinary.config(
 # Firebase setup
 # -------------------------
 if not firebase_admin._apps:
-    cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS)
+    cred = credentials.Certificate(settings.credentials_data)
     firebase_admin.initialize_app(cred)
 db = firestore.client()
 
